@@ -11,7 +11,6 @@
 
 namespace Hedeqiang\Yeepay\Util;
 
-
 class StringBuilder
 {
     public const LINE = '<br/>';
@@ -31,7 +30,7 @@ class StringBuilder
 
     public function AppendLine($str)
     {
-        $this->list[] = $str . self::LINE;
+        $this->list[] = $str.self::LINE;
 
         return $this;
     }

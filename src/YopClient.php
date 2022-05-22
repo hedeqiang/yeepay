@@ -47,12 +47,14 @@ class YopClient
 
         self::signAndEncrypt($YopRequest);
         $serverUrl .= (false === strpos($serverUrl, '?') ? '?' : '&').$YopRequest->toQueryString();
+
         return HttpRequest::curl_request($serverUrl, $YopRequest);
     }
 
     public static function post($methodOrUri, $YopRequest)
     {
         $content = self::postForString($methodOrUri, $YopRequest);
+
         return self::handleResult($YopRequest, $content);
     }
 
@@ -62,12 +64,14 @@ class YopClient
         $serverUrl = self::richRequest($methodOrUri, $YopRequest);
 
         self::signAndEncrypt($YopRequest);
+
         return HttpRequest::curl_request($serverUrl, $YopRequest);
     }
 
     public static function upload($methodOrUri, $YopRequest)
     {
         $content = self::uploadForString($methodOrUri, $YopRequest);
+
         return self::handleResult($YopRequest, $content);
     }
 
@@ -77,6 +81,7 @@ class YopClient
         $serverUrl = self::richRequest($methodOrUri, $YopRequest);
 
         self::signAndEncrypt($YopRequest);
+
         return HttpRequest::curl_request($serverUrl, $YopRequest);
     }
 
