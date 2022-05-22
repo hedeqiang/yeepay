@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the hedeqiang/yeepay
+ *
+ * (c) hedeqiang <laravel_code@163.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Hedeqiang\Yeepay;
 
 use Hedeqiang\Yeepay\Util\AESEncrypter;
@@ -27,17 +36,19 @@ class YopClient
     {
         $content = self::getForString($methodOrUri, $YopRequest);
         $response = self::handleResult($YopRequest, $content);
+
         return $response;
     }
 
     public static function getForString($methodOrUri, $YopRequest)
     {
-        $YopRequest->httpMethod = "GET";
+        $YopRequest->httpMethod = 'GET';
         $serverUrl = self::richRequest($methodOrUri, $YopRequest);
 
         self::signAndEncrypt($YopRequest);
-        $serverUrl .= (strpos($serverUrl, '?') === false ? '?' : '&') . $YopRequest->toQueryString();
+        $serverUrl .= (false === strpos($serverUrl, '?') ? '?' : '&').$YopRequest->toQueryString();
         $response = HttpRequest::curl_request($serverUrl, $YopRequest);
+
         return $response;
     }
 
@@ -45,16 +56,18 @@ class YopClient
     {
         $content = self::postForString($methodOrUri, $YopRequest);
         $response = self::handleResult($YopRequest, $content);
+
         return $response;
     }
 
     public static function postForString($methodOrUri, $YopRequest)
     {
-        $YopRequest->httpMethod = "POST";
+        $YopRequest->httpMethod = 'POST';
         $serverUrl = self::richRequest($methodOrUri, $YopRequest);
 
         self::signAndEncrypt($YopRequest);
         $response = HttpRequest::curl_request($serverUrl, $YopRequest);
+
         return $response;
     }
 
@@ -62,46 +75,48 @@ class YopClient
     {
         $content = self::uploadForString($methodOrUri, $YopRequest);
         $response = self::handleResult($YopRequest, $content);
+
         return $response;
     }
 
     public static function uploadForString($methodOrUri, $YopRequest)
     {
-        $YopRequest->httpMethod = "POST";
+        $YopRequest->httpMethod = 'POST';
         $serverUrl = self::richRequest($methodOrUri, $YopRequest);
 
         self::signAndEncrypt($YopRequest);
         $response = HttpRequest::curl_request($serverUrl, $YopRequest);
+
         return $response;
     }
 
     public static function signAndEncrypt($YopRequest)
     {
         if (empty($YopRequest->method)) {
-            error_log("method must be specified");
+            error_log('method must be specified');
         }
         if (empty($YopRequest->secretKey)) {
-            error_log("secretKey must be specified");
+            error_log('secretKey must be specified');
         }
         $appKey = $YopRequest->appKey;
         if (empty($appKey)) {
             $appKey = $YopRequest->config->CUSTOMER_NO;
         }
         if (empty($appKey)) {
-            error_log("appKey 与 customerNo 不能同时为空");
+            error_log('appKey 与 customerNo 不能同时为空');
         }
 
-        $toSignParamMap = array_merge($YopRequest->paramMap, array("v" => $YopRequest->version, "method" => $YopRequest->method));
+        $toSignParamMap = array_merge($YopRequest->paramMap, ['v' => $YopRequest->version, 'method' => $YopRequest->method]);
         $signValue = YopSignUtils::sign($toSignParamMap, $YopRequest->ignoreSignParams, $YopRequest->secretKey, $YopRequest->signAlg, $YopRequest->config->debug);
 
         date_default_timezone_set('PRC');
         $dataTime = new \DateTime();
         $timestamp = $dataTime->format(\DateTime::ISO8601); // Works the same since const ISO8601 = "Y-m-d\TH:i:sO"
 
-        $headers = array();
+        $headers = [];
         $headers['x-yop-appkey'] = $appKey;
         $headers['x-yop-date'] = $timestamp;
-        $headers['Authorization'] = "YOP-HMAC-AES128 " . $signValue;
+        $headers['Authorization'] = 'YOP-HMAC-AES128 '.$signValue;
 
         $YopRequest->headers = $headers;
         if ($YopRequest->encrypt) {
@@ -109,7 +124,7 @@ class YopClient
         }
     }
 
-    #加密
+    // 加密
     public static function encrypt($YopRequest)
     {
         $builder = $YopRequest->paramMap;
@@ -121,10 +136,10 @@ class YopClient
             }
         }*/
         if (!empty($builder)) {
-            $encryptBody = "";
+            $encryptBody = '';
             foreach ($builder as $k => $v) {
-                $encryptBody .= strlen($encryptBody) == 0 ? "" : "&";
-                $encryptBody .= $k."=".urlencode($v);
+                $encryptBody .= 0 == strlen($encryptBody) ? '' : '&';
+                $encryptBody .= $k.'='.urlencode($v);
             }
         }
         if (empty($encryptBody)) {
@@ -139,7 +154,8 @@ class YopClient
             }
         }
     }
-    #解密
+
+    // 解密
     public static function decrypt($YopRequest, $strResult)
     {
         if (!empty($strResult) && $YopRequest->{$YopRequest->Config->ENCRYPT}) {
@@ -149,7 +165,8 @@ class YopClient
                 $strResult = BlowfishEncrypter::decode($strResult, $YopRequest->secretKey);
             }
         }
-        return  $strResult;
+
+        return $strResult;
     }
 
     public static function richRequest($methodOrUri, $YopRequest)
@@ -167,6 +184,7 @@ class YopClient
             }
         }
         $YopRequest->setMethod($methodOrUri);
+
         return $serverUrl;
     }
 
@@ -182,18 +200,17 @@ class YopClient
 
         $response->requestId = $YopRequest->requestId;
         if (!empty($jsoncontent->result)) {
-            $response->state = "SUCCESS";
+            $response->state = 'SUCCESS';
             $response->result = $jsoncontent->result;
             $response->sign = $jsoncontent->sign;
         } else {
-            $response->state = "FAILURE";
-            //$response->error = new YopError();
+            $response->state = 'FAILURE';
+            // $response->error = new YopError();
             $response->error->code = $jsoncontent->error->code;
             $response->error->message = $jsoncontent->error->message;
             $response->sign = $jsoncontent->sign;
         }
         // $response->validSign = YopSignUtils::isValidResult($jsoncontent->result, $YopRequest->secretKey, $YopRequest->signAlg,$jsoncontent->sign);
-
 
         return $response;
     }

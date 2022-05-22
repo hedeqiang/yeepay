@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the hedeqiang/yeepay
+ *
+ * (c) hedeqiang <laravel_code@163.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Hedeqiang\Yeepay;
 
 class YopRequest
@@ -8,61 +17,58 @@ class YopRequest
 
     public $httpMethod;
     public $method;
-    public $version = "2.0";
-    public $signAlg = "sha256";
+    public $version = '2.0';
+    public $signAlg = 'sha256';
 
     /**
-     * 商户编号，易宝商户可不注册开放应用(获取appKey)也可直接调用API
+     * 商户编号，易宝商户可不注册开放应用(获取appKey)也可直接调用API.
      */
     public $customerNo;
 
-    public $headers = array();
-    public $paramMap = array();
-    public $fileMap = array();
+    public $headers = [];
+    public $paramMap = [];
+    public $fileMap = [];
     public $jsonParam;
-    public $ignoreSignParams = array('sign');
+    public $ignoreSignParams = ['sign'];
 
     public $requestId;
 
     /**
-     * 连接超时时间
+     * 连接超时时间.
      */
     public $connectTimeout = 30000;
 
     /**
-     * 读取返回结果超时
+     * 读取返回结果超时.
      */
     public $readTimeout = 60000;
 
     /**
-     * 可支持不同请求使用不同的appKey及secretKey
+     * 可支持不同请求使用不同的appKey及secretKey.
      */
     public $appKey;
 
-
     /**
-     * 报文是否加密，如果请求加密，则响应也加密，需做解密处理
+     * 报文是否加密，如果请求加密，则响应也加密，需做解密处理.
      */
     public $encrypt = false;
     /**
-     * 可支持不同请求使用不同的appKey及secretKey,secretKey只用于本地签名，不会被提交
+     * 可支持不同请求使用不同的appKey及secretKey,secretKey只用于本地签名，不会被提交.
      */
     public $secretKey;
 
     /**
-     * 可支持不同请求使用不同的appKey及secretKey、serverRoot,secretKey只用于本地签名，不会被提交
+     * 可支持不同请求使用不同的appKey及secretKey、serverRoot,secretKey只用于本地签名，不会被提交.
      */
     public $yopPublicKey;
 
     /**
-     * 业务结果是否签名，默认不签名
+     * 业务结果是否签名，默认不签名.
      */
     public $signRet = false;
     /**
-
-
     /**
-     * 可支持不同请求使用不同的appKey及secretKey、serverRoot,secretKey只用于本地签名，不会被提交
+     * 可支持不同请求使用不同的appKey及secretKey、serverRoot,secretKey只用于本地签名，不会被提交.
      */
     public $serverRoot;
     public $downrequest;
@@ -71,6 +77,7 @@ class YopRequest
     {
         $this->$name = $value;
     }
+
     public function __get($name)
     {
         return $this->$name;
@@ -104,7 +111,7 @@ class YopRequest
     }
 
     public function __construct($appKey = '', $secretKey = null, $yopPublicKey = null, $serverRoot = null)
-    { //定义构造函数
+    { // 定义构造函数
         $this->config = new YopConfig();
         $this->requestId = YopRequest::uuid();
 
@@ -134,10 +141,10 @@ class YopRequest
 
     public function addParam($key, $values)
     {
-        if ("_file" == $key) {
+        if ('_file' == $key) {
             YopRequest::addFile($key, $values);
         } else {
-            $addParam = array($key => $values);
+            $addParam = [$key => $values];
             $this->paramMap = array_merge($this->paramMap, $addParam);
         }
     }
@@ -145,7 +152,7 @@ class YopRequest
     public function addFile($key, $values)
     {
         $this->ignoreSignParams = array_push($this->ignoreSignParams, $key);
-        $addFile = array($key => $values);
+        $addFile = [$key => $values];
         $this->fileMap = array_merge($this->fileMap, $addFile);
     }
 
@@ -181,30 +188,32 @@ class YopRequest
     }
 
     /**
-     * 将参数转换成k=v拼接的形式
+     * 将参数转换成k=v拼接的形式.
      */
     public function toQueryString()
     {
-        $StrQuery = "";
+        $StrQuery = '';
         foreach ($this->paramMap as $k => $v) {
-            $StrQuery .= strlen($StrQuery) == 0 ? "" : "&";
-            $StrQuery .= $k."=".urlencode($v);
+            $StrQuery .= 0 == strlen($StrQuery) ? '' : '&';
+            $StrQuery .= $k.'='.urlencode($v);
         }
+
         return $StrQuery;
     }
 
     private function uuid($namespace = '')
     {
         static $guid = '';
-        $uid = uniqid("", true);
+        $uid = uniqid('', true);
         $data = $_SERVER['REQUEST_TIME'];
-        $hash = hash('ripemd128', $uid . $data);
+        $hash = hash('ripemd128', $uid.$data);
 
-        $guid = $namespace .
-                substr($uid, 0, 14) .
-                substr($uid, 15, 24) .
-                substr($hash, 0, 10) .
+        $guid = $namespace.
+                substr($uid, 0, 14).
+                substr($uid, 15, 24).
+                substr($hash, 0, 10).
                 '';
+
         return $guid;
     }
 }
