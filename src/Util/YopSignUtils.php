@@ -50,7 +50,6 @@ abstract class YopSignUtils
         $signValue = hash($algName, $str);
 
         if ($debug) {
-            print_r($YopConfig);
             var_dump('algName='.$algName);
             var_dump('str='.$str);
             var_dump('signValue='.$signValue);

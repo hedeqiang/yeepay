@@ -11,12 +11,6 @@
 
 namespace Hedeqiang\Yeepay\Util;
 
-/**
- * Created by PhpStorm.
- * User: wilson
- * Date: 16/7/7
- * Time: 16:21.
- */
 abstract class BlowfishEncrypter
 {
     /**
@@ -34,7 +28,7 @@ abstract class BlowfishEncrypter
      * @param string $str 需加密的字符串
      * @param string $key 密钥
      *
-     * @return type
+     * @return string
      */
     public static function encode($str, $key)
     {
@@ -47,13 +41,11 @@ abstract class BlowfishEncrypter
         return base64_encode(mcrypt_encrypt(self::CIPHER, substr($md5Key, 0, 16), $str, self::MODE, substr($md5Key, 0, 8)));
     }
 
-    /**
+    /***
      * 解密.
-     *
-     * @param type $str
-     * @param type $key
-     *
-     * @return type
+     * @param $str
+     * @param $key
+     * @return string
      */
     public static function decode($str, $key)
     {

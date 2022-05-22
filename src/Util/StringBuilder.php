@@ -11,12 +11,7 @@
 
 namespace Hedeqiang\Yeepay\Util;
 
-/**
- * Created by PhpStorm.
- * User: yp-tc-7176
- * Date: 17/7/17
- * Time: 11:42.
- */
+
 class StringBuilder
 {
     public const LINE = '<br/>';
@@ -24,26 +19,26 @@ class StringBuilder
 
     public function __construct($str = null)
     {
-        array_push($this->list, $str);
+        $this->list[] = $str;
     }
 
     public function Append($str)
     {
-        array_push($this->list, $str);
+        $this->list[] = $str;
 
         return $this;
     }
 
     public function AppendLine($str)
     {
-        array_push($this->list, $str.self::LINE);
+        $this->list[] = $str . self::LINE;
 
         return $this;
     }
 
     public function AppendFormat($str, $args)
     {
-        array_push($this->list, sprintf($str, $args));
+        $this->list[] = sprintf($str, $args);
 
         return $this;
     }

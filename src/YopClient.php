@@ -12,7 +12,7 @@
 namespace Hedeqiang\Yeepay;
 
 use Hedeqiang\Yeepay\Util\AESEncrypter;
-use Hedeqiang\Yeepay\Util\HTTPRequest;
+use Hedeqiang\Yeepay\Util\HttpRequest;
 use Hedeqiang\Yeepay\Util\BlowfishEncrypter;
 use Hedeqiang\Yeepay\Util\YopSignUtils;
 
@@ -47,17 +47,13 @@ class YopClient
 
         self::signAndEncrypt($YopRequest);
         $serverUrl .= (false === strpos($serverUrl, '?') ? '?' : '&').$YopRequest->toQueryString();
-        $response = HttpRequest::curl_request($serverUrl, $YopRequest);
-
-        return $response;
+        return HttpRequest::curl_request($serverUrl, $YopRequest);
     }
 
     public static function post($methodOrUri, $YopRequest)
     {
         $content = self::postForString($methodOrUri, $YopRequest);
-        $response = self::handleResult($YopRequest, $content);
-
-        return $response;
+        return self::handleResult($YopRequest, $content);
     }
 
     public static function postForString($methodOrUri, $YopRequest)
@@ -66,17 +62,13 @@ class YopClient
         $serverUrl = self::richRequest($methodOrUri, $YopRequest);
 
         self::signAndEncrypt($YopRequest);
-        $response = HttpRequest::curl_request($serverUrl, $YopRequest);
-
-        return $response;
+        return HttpRequest::curl_request($serverUrl, $YopRequest);
     }
 
     public static function upload($methodOrUri, $YopRequest)
     {
         $content = self::uploadForString($methodOrUri, $YopRequest);
-        $response = self::handleResult($YopRequest, $content);
-
-        return $response;
+        return self::handleResult($YopRequest, $content);
     }
 
     public static function uploadForString($methodOrUri, $YopRequest)
@@ -85,9 +77,7 @@ class YopClient
         $serverUrl = self::richRequest($methodOrUri, $YopRequest);
 
         self::signAndEncrypt($YopRequest);
-        $response = HttpRequest::curl_request($serverUrl, $YopRequest);
-
-        return $response;
+        return HttpRequest::curl_request($serverUrl, $YopRequest);
     }
 
     public static function signAndEncrypt($YopRequest)
@@ -198,7 +188,6 @@ class YopClient
         $jsoncontent = json_decode($content['content']);
         $response->requestId = $YopRequest->requestId;
 
-        $response->requestId = $YopRequest->requestId;
         if (!empty($jsoncontent->result)) {
             $response->state = 'SUCCESS';
             $response->result = $jsoncontent->result;

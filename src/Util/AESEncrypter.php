@@ -11,12 +11,6 @@
 
 namespace Hedeqiang\Yeepay\Util;
 
-/**
- * Created by PhpStorm.
- * User: wilson
- * Date: 16/7/7
- * Time: 11:07.
- */
 abstract class AESEncrypter
 {
     /**
@@ -34,20 +28,18 @@ abstract class AESEncrypter
      * @param string $str 需加密的字符串
      * @param string $key 密钥
      *
-     * @return type
+     * @return string
      */
     public static function encode($str, $key)
     {
         return base64_encode(openssl_encrypt($str, self::MODE, base64_decode($key), OPENSSL_RAW_DATA));
     }
 
-    /**
+    /***
      * 解密.
-     *
-     * @param type $str
-     * @param type $key
-     *
-     * @return type
+     * @param $str
+     * @param $key
+     * @return false|string
      */
     public static function decode($str, $key)
     {

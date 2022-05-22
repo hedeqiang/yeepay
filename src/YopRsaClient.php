@@ -11,7 +11,7 @@
 
 namespace Hedeqiang\Yeepay;
 
-use Hedeqiang\Yeepay\Util\HTTPRequest;
+use Hedeqiang\Yeepay\Util\HttpRequest;
 use Hedeqiang\Yeepay\Util\HttpUtils;
 use Hedeqiang\Yeepay\Util\StringUtils;
 use Hedeqiang\Yeepay\Util\Base64Url;
@@ -137,9 +137,7 @@ class YopRsaClient
     public static function get($methodOrUri, $YopRequest)
     {
         $content = YopRsaClient::getForString($methodOrUri, $YopRequest);
-        $response = YopRsaClient::handleRsaResult($YopRequest, $content);
-
-        return $response;
+        return YopRsaClient::handleRsaResult($YopRequest, $content);
     }
 
     public static function getForString($methodOrUri, $YopRequest)
@@ -149,24 +147,19 @@ class YopRsaClient
         $serverUrl .= (false === strpos($serverUrl, '?') ? '?' : '&').$YopRequest->toQueryString();
 
         self::SignRsaParameter($methodOrUri, $YopRequest);
-        $response = HttpRequest::curl_request($serverUrl, $YopRequest);
-
-        return $response;
+        return HttpRequest::curl_request($serverUrl, $YopRequest);
     }
 
     public static function post($methodOrUri, $YopRequest)
     {
         $content = YopRsaClient::postString($methodOrUri, $YopRequest);
-        $response = YopRsaClient::handleRsaResult($YopRequest, $content);
-
-        return $response;
+        return YopRsaClient::handleRsaResult($YopRequest, $content);
     }
 
     /**
      * @param $methodOrUri
      * @param $YopRequest
-     *
-     * @return type
+     * @return array|Util\type
      */
     public static function postString($methodOrUri, $YopRequest)
     {
@@ -174,9 +167,7 @@ class YopRsaClient
         $serverUrl = YopRsaClient::richRequest($methodOrUri, $YopRequest);
 
         self::SignRsaParameter($methodOrUri, $YopRequest);
-        $response = HttpRequest::curl_request($serverUrl, $YopRequest);
-
-        return $response;
+        return HttpRequest::curl_request($serverUrl, $YopRequest);
     }
 
     /**
@@ -197,7 +188,7 @@ class YopRsaClient
             if ($forSignature && 0 == strcasecmp($k, 'Authorization')) {
                 continue;
             }
-            array_push($ArrayList, $k.'='.rawurlencode($v));
+            $ArrayList[] = $k . '=' . rawurlencode($v);
         }
         sort($ArrayList);
 
@@ -213,7 +204,7 @@ class YopRsaClient
      * @param $headers
      * @param $headersToSign
      *
-     * @return arry
+     * @return array
      */
     public static function getHeadersToSign($headers, $headersToSign)
     {
@@ -221,15 +212,15 @@ class YopRsaClient
         if (null != $headersToSign) {
             $tempSet = [];
             foreach ($headersToSign as $header) {
-                array_push($tempSet, strtolower(trim($header)));
+                $tempSet[] = strtolower(trim($header));
             }
 
             $headersToSign = $tempSet;
         }
 
         foreach ($headers as $key => $value) {
-            if (null != $value && !empty($value)) {
-                if ((null == $headersToSign && isDefaultHeaderToSign($key)) || (null != $headersToSign && in_array(strtolower($key), $headersToSign) && 'Authorization' != $key)) {
+            if (!empty($value)) {
+                if ((null == $headersToSign && self::isDefaultHeaderToSign($key)) || (null != $headersToSign && in_array(strtolower($key), $headersToSign) && 'Authorization' != $key)) {
                     $ret[$key] = $value;
                 }
             }
@@ -248,8 +239,8 @@ class YopRsaClient
     {
         $header = strtolower(trim($header));
         $defaultHeadersToSign = [];
-        array_push($defaultHeadersToSign, 'host');
-        array_push($defaultHeadersToSign, 'content-type');
+        $defaultHeadersToSign[] = 'host';
+        $defaultHeadersToSign[] = 'content-type';
 
         return 0 == strpos($header, 'x-yop-') || in_array($defaultHeadersToSign, $header);
     }
@@ -276,7 +267,7 @@ class YopRsaClient
             }
             $key = HttpUtils::normalize(strtolower(trim($key)));
             $value = HttpUtils::normalize(trim($value));
-            array_push($headerStrings, $key.':'.$value);
+            $headerStrings[] = $key . ':' . $value;
         }
 
         sort($headerStrings);
@@ -309,9 +300,7 @@ class YopRsaClient
         $YopRequest->httpMethod = 'POST';
         $serverUrl = self::richRequest($methodOrUri, $YopRequest);
         self::SignRsaParameter($methodOrUri, $YopRequest);
-        $response = HttpRequest::curl_request($serverUrl, $YopRequest);
-
-        return $response;
+        return HttpRequest::curl_request($serverUrl, $YopRequest);
     }
 
     public static function richRequest($methodOrUri, $YopRequest)
@@ -377,7 +366,7 @@ class YopRsaClient
     {
         // $result=json_encode($result,320);
         $str = '';
-        if (null == $result || empty($result)) {
+        if (empty($result)) {
             $str = '';
         } else {
             $str .= trim($result);

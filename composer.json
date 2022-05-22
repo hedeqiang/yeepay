@@ -10,7 +10,10 @@
     ],
     "require": {
         "php": ">=7.0",
-        "ext-openssl": "*"
+        "ext-openssl": "*",
+        "ext-json": "*",
+        "ext-mcrypt": "*",
+        "ext-curl": "*"
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.8",

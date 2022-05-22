@@ -16,17 +16,13 @@ define('LANGS', 'php');
 define('VERSION', '3.2.11');
 define('USERAGENT', LANGS.'/'.VERSION.'/'.PHP_OS.'/'.$_SERVER['SERVER_SOFTWARE'].'/Zend Framework/'.zend_version().'/'.PHP_VERSION.'/'.$_SERVER['HTTP_ACCEPT_LANGUAGE'].'/');
 
-abstract class HTTPRequest
+abstract class HttpRequest
 {
     /**
-     * 加密.
      *
-     * @param string $str    需加密的字符串
-     * @param string $key    密钥
-     * @param string $CIPHER 算法
-     * @param string $MODE   模式
-     *
-     * @return type
+     * @param $url
+     * @param $request
+     * @return array
      */
     public static function curl_request($url, $request)
     {
@@ -51,12 +47,12 @@ abstract class HTTPRequest
         $headerArray = [];
         if (null != $request->headers) {
             foreach ($request->headers as $key => $value) {
-                array_push($headerArray, $key.':'.$value);
+                $headerArray[] = $key . ':' . $value;
             }
         }
-        array_push($headerArray, 'x-yop-sdk-langs:'.LANGS);
-        array_push($headerArray, 'x-yop-sdk-version:'.VERSION);
-        array_push($headerArray, 'x-yop-request-id:'.$request->requestId);
+        $headerArray[] = 'x-yop-sdk-langs:' . LANGS;
+        $headerArray[] = 'x-yop-sdk-version:' . VERSION;
+        $headerArray[] = 'x-yop-request-id:' . $request->requestId;
         if (null != $request->jsonParam) {
             array_push(
                 $headerArray,
@@ -65,15 +61,14 @@ abstract class HTTPRequest
             );
         }
 
-        var_dump($headerArray);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headerArray);
         // curl_setopt($curl, CURLINFO_HEADER_OUT, );
 
         // var_dump($request);
         // var_dump($request->httpMethod);
 
+        curl_setopt($curl, CURLOPT_URL, $url);
         if ('POST' == $request->httpMethod) {
-            curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_POST, 1);
             if (null != $request->jsonParam) {
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $request->jsonParam);
@@ -104,11 +99,8 @@ abstract class HTTPRequest
                 }
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $fields);
             }
-        } else {
-            curl_setopt($curl, CURLOPT_URL, $url);
         }
         $data = curl_exec($curl);
-        var_dump($data);
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if (curl_errno($curl)) {
             return curl_error($curl);
