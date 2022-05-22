@@ -137,6 +137,7 @@ class YopRsaClient
     public static function get($methodOrUri, $YopRequest)
     {
         $content = YopRsaClient::getForString($methodOrUri, $YopRequest);
+
         return YopRsaClient::handleRsaResult($YopRequest, $content);
     }
 
@@ -147,18 +148,21 @@ class YopRsaClient
         $serverUrl .= (false === strpos($serverUrl, '?') ? '?' : '&').$YopRequest->toQueryString();
 
         self::SignRsaParameter($methodOrUri, $YopRequest);
+
         return HttpRequest::curl_request($serverUrl, $YopRequest);
     }
 
     public static function post($methodOrUri, $YopRequest)
     {
         $content = YopRsaClient::postString($methodOrUri, $YopRequest);
+
         return YopRsaClient::handleRsaResult($YopRequest, $content);
     }
 
     /**
      * @param $methodOrUri
      * @param $YopRequest
+     *
      * @return array|Util\type
      */
     public static function postString($methodOrUri, $YopRequest)
@@ -167,6 +171,7 @@ class YopRsaClient
         $serverUrl = YopRsaClient::richRequest($methodOrUri, $YopRequest);
 
         self::SignRsaParameter($methodOrUri, $YopRequest);
+
         return HttpRequest::curl_request($serverUrl, $YopRequest);
     }
 
@@ -188,7 +193,7 @@ class YopRsaClient
             if ($forSignature && 0 == strcasecmp($k, 'Authorization')) {
                 continue;
             }
-            $ArrayList[] = $k . '=' . rawurlencode($v);
+            $ArrayList[] = $k.'='.rawurlencode($v);
         }
         sort($ArrayList);
 
@@ -267,7 +272,7 @@ class YopRsaClient
             }
             $key = HttpUtils::normalize(strtolower(trim($key)));
             $value = HttpUtils::normalize(trim($value));
-            $headerStrings[] = $key . ':' . $value;
+            $headerStrings[] = $key.':'.$value;
         }
 
         sort($headerStrings);
@@ -300,6 +305,7 @@ class YopRsaClient
         $YopRequest->httpMethod = 'POST';
         $serverUrl = self::richRequest($methodOrUri, $YopRequest);
         self::SignRsaParameter($methodOrUri, $YopRequest);
+
         return HttpRequest::curl_request($serverUrl, $YopRequest);
     }
 

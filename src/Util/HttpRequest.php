@@ -19,9 +19,9 @@ define('USERAGENT', LANGS.'/'.VERSION.'/'.PHP_OS.'/'.$_SERVER['SERVER_SOFTWARE']
 abstract class HttpRequest
 {
     /**
-     *
      * @param $url
      * @param $request
+     *
      * @return array
      */
     public static function curl_request($url, $request)
@@ -47,12 +47,12 @@ abstract class HttpRequest
         $headerArray = [];
         if (null != $request->headers) {
             foreach ($request->headers as $key => $value) {
-                $headerArray[] = $key . ':' . $value;
+                $headerArray[] = $key.':'.$value;
             }
         }
-        $headerArray[] = 'x-yop-sdk-langs:' . LANGS;
-        $headerArray[] = 'x-yop-sdk-version:' . VERSION;
-        $headerArray[] = 'x-yop-request-id:' . $request->requestId;
+        $headerArray[] = 'x-yop-sdk-langs:'.LANGS;
+        $headerArray[] = 'x-yop-sdk-version:'.VERSION;
+        $headerArray[] = 'x-yop-request-id:'.$request->requestId;
         if (null != $request->jsonParam) {
             array_push(
                 $headerArray,
