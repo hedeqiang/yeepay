@@ -344,7 +344,7 @@ class YopRsaClient
             $response->state = 'SUCCESS';
             $response->result = $jsoncontent->result;
             $response->requestId = $YopRequest->requestId;
-            // $signStr=$jsoncontent->result;
+        // $signStr=$jsoncontent->result;
         } else {
             $response->state = 'FAILURE';
             $response->requestId = $jsoncontent->requestId;
