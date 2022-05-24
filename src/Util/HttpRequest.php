@@ -86,7 +86,7 @@ abstract class HttpRequest
                         if (class_exists('CURLFile')) {
                             // 禁用"@"上传方法,这样就可以安全的传输"@"开头的参数值
                             curl_setopt($curl, CURLOPT_SAFE_UPLOAD, true);
-                            $file = new CURLFile($fileName);
+                            $file = new \CURLFile($fileName);
                         } else {
                             curl_setopt($curl, CURLOPT_SAFE_UPLOAD, false);
                             $file = "@{$fileName}";
