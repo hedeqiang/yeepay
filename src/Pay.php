@@ -12,9 +12,9 @@ class Pay
 
     protected $guzzleOptions = [];
 
-    const ENDPOINT_TEMPLATE = 'https://openapi.yeepay.com/yop-center/%s';
-    const ENDPOINT_UPLOAD_TEMPLATE = 'https://yos.yeepay.com/yop-center/%s';
-    const PROTOCOL_VERSION = 'yop-auth-v3';
+    public const ENDPOINT_TEMPLATE = 'https://openapi.yeepay.com/yop-center/%s';
+    public const ENDPOINT_UPLOAD_TEMPLATE = 'https://yos.yeepay.com/yop-center/%s';
+    public const PROTOCOL_VERSION = 'yop-auth-v3';
 
 
     public function __construct(array $config)
@@ -44,7 +44,7 @@ class Pay
 
         $httpRequestMethod = 'POST';
 
-        
+
         $canonicalRequest = $authStr . '\n' . $httpRequestMethod . '\n' . $uri . '\n';
     }
 
@@ -129,5 +129,4 @@ class Pay
 
         return $StrQuery;
     }
-
 }
