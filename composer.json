@@ -10,9 +10,8 @@
     ],
     "require": {
         "php": ">=7.0",
-        "ext-openssl": "*",
-        "ext-json": "*",
-        "ext-curl": "*"
+        "guzzlehttp/guzzle": "^7.4",
+        "symfony/psr-http-message-bridge": "^2.1"
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "^2.8",
