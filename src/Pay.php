@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the hedeqiang/yeepay
+ *
+ * (c) hedeqiang <laravel_code@163.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Hedeqiang\Yeepay;
 
 use GuzzleHttp\Client;
@@ -9,13 +18,11 @@ class Pay
 {
     protected $config;
 
-
     protected $guzzleOptions = [];
 
     public const ENDPOINT_TEMPLATE = 'https://openapi.yeepay.com/yop-center/%s';
     public const ENDPOINT_UPLOAD_TEMPLATE = 'https://yos.yeepay.com/yop-center/%s';
     public const PROTOCOL_VERSION = 'yop-auth-v3';
-
 
     public function __construct(array $config)
     {
@@ -26,7 +33,6 @@ class Pay
     {
         return new Client($this->guzzleOptions);
     }
-
 
     protected function getHeaders($uri, $params)
     {
@@ -40,14 +46,12 @@ class Pay
         $timestamp = $dataTime->format(\DateTime::ISO8601);
 
         $expired_seconds = '1800';
-        $authStr = self::PROTOCOL_VERSION . '/' . $appKey . '/' . $timestamp . '/' . $expired_seconds;
+        $authStr = self::PROTOCOL_VERSION.'/'.$appKey.'/'.$timestamp.'/'.$expired_seconds;
 
         $httpRequestMethod = 'POST';
 
-
-        $canonicalRequest = $authStr . '\n' . $httpRequestMethod . '\n' . $uri . '\n';
+        $canonicalRequest = $authStr.'\n'.$httpRequestMethod.'\n'.$uri.'\n';
     }
-
 
     /**
      * @param $headers
@@ -116,7 +120,7 @@ class Pay
             }
             $key = rawurlencode(strtolower(trim($key)));
             $value = rawurlencode(trim($value));
-            $headerStrings[] = $key . ':' . $value;
+            $headerStrings[] = $key.':'.$value;
         }
 
         sort($headerStrings);
